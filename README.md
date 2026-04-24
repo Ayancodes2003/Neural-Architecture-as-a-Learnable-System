@@ -146,6 +146,91 @@ We gradually increase λ:
 - allows feature learning first  
 
 ---
+## 6.3 Algorithmic Workflow
+
+The full training pipeline operates as follows:
+
+### Forward Pass
+
+1. Input batch X is passed through feature extractor
+2. For each PrunableLinear layer:
+   - Compute gates:
+     G = sigmoid(S)
+   - Compute pruned weights:
+     W_pruned = W ⊙ G
+   - Apply linear transformation:
+     y = X · W_pruned + b
+
+---
+
+### Loss Computation
+
+1. Compute classification loss:
+   L_classification = CrossEntropy(y, targets)
+
+2. Compute sparsity loss:
+   L_sparsity = Σ G
+
+3. Apply SNR weighting:
+   L_sparsity = Σ (G × 1/(SNR + ε))
+
+4. Total loss:
+   L = L_classification + λ × L_sparsity
+
+---
+
+### Backward Pass
+
+1. Compute gradients for:
+   - weights
+   - gate_scores
+
+2. Update parameters using optimizer (Adam)
+
+---
+
+### SNR Update (Per Step)
+
+For each gate:
+
+1. Update gradient mean:
+   μ = βμ + (1 - β)g
+
+2. Update variance:
+   σ² = βσ² + (1 - β)(g - μ)²
+
+3. Compute:
+   SNR = |μ| / (sqrt(σ²) + ε)
+
+---
+
+### Pruning Behavior
+
+- If gate → 0 → connection effectively removed
+- If gate → 1 → connection retained
+
+---
+
+### Training Loop Summary
+
+For epoch in range(E):
+    For batch in data:
+        Forward pass
+        Compute loss
+        Backward pass
+        Update parameters
+        Update SNR statistics
+
+---
+
+### Inference
+
+At inference time:
+- gates act as soft masks
+- can optionally be binarized:
+  G_binary = (G > threshold)
+
+---
 
 ## 7. Data Pipeline
 
