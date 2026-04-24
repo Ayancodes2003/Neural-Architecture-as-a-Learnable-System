@@ -1,0 +1,6 @@
+# Central configuration for training and deployment defaults.
+learning_rate: 0.001
+batch_size: 64
+lambda_max: 0.1
+epochs: 50
+device: "cuda"

@@ -1,0 +1,7 @@
+# Minimal dependencies for training, evaluation, and serving.
+torch
+torchvision
+fastapi
+uvicorn
+numpy
+matplotlib
