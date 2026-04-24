@@ -208,7 +208,6 @@ __marimo__/
 
 # Project artifacts and large files
 self_pruning_system/checkpoints/
-self_pruning_system/outputs/
 self_pruning_system/data/cifar-10-batches-py/
 self_pruning_system/data/*.tar.gz
 *.pt
